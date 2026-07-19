@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { TodosModule } from './todos/todos.module';
 
 @Module({
   imports: [
@@ -8,6 +10,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    AuthModule,
+    TodosModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -22,7 +26,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           password: configService.get<string>('DB_PASSWORD', 'postgres'),
           database: configService.get<string>('DB_NAME', 'libheros'),
           autoLoadEntities: true,
-          synchronize: false,
+          synchronize: true,
         };
       },
     }),
