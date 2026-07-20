@@ -14,7 +14,9 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  create(userData: Pick<User, 'email' | 'password'>): Promise<User> {
+  create(
+    userData: Pick<User, 'firstName' | 'lastName' | 'email' | 'password'>,
+  ): Promise<User> {
     const user = this.usersRepository.create(userData);
     return this.usersRepository.save(user);
   }

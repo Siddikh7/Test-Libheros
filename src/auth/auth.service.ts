@@ -20,18 +20,24 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const existingUser = await this.usersService.findByEmail(registerDto.email);
-
-    if (existingUser) {
-      throw new ConflictException('Email already in use');
+    if (registerDto.email !== registerDto.confirmEmail) {
+      throw new ConflictException('Emails do not match');
     }
 
     if (registerDto.password !== registerDto.passwordConfirmation) {
       throw new ConflictException('Passwords do not match');
     }
 
+    const existingUser = await this.usersService.findByEmail(registerDto.email);
+
+    if (existingUser) {
+      throw new ConflictException('Email already in use');
+    }
+
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
     const user = await this.usersService.create({
+      firstName: registerDto.firstName,
+      lastName: registerDto.lastName,
       email: registerDto.email,
       password: hashedPassword,
     });
